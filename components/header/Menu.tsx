@@ -1,5 +1,6 @@
 'use client'
 import useCartService from '@/lib/hooks/useCartStore'
+import useLayoutService from '@/lib/hooks/useLayout'
 import { signIn, signOut, useSession } from 'next-auth/react'
 
 import Link from 'next/link'
@@ -8,7 +9,6 @@ import { useEffect, useState } from 'react'
 const Menu = () => {
   const { items, init } = useCartService()
   const [mounted, setMounted] = useState(false)
-
   useEffect(() => {
     setMounted(true)
   }, [])
@@ -19,20 +19,27 @@ const Menu = () => {
   }
 
   const { data: session } = useSession()
+
+  const { theme, toggleTheme } = useLayoutService()
+
+  const handleClick = () => {
+    ;(document.activeElement as HTMLElement).blur()
+  }
+
   return (
-    <div>
-      <ul className="flex items-stretch">
-        <li>
-          <Link className="btn btn-ghost rounded-btn" href="/cart">
-            Cart
-            {mounted && items.length !== 0 && (
-              <div className="badge badge-secondary">
-                {items.reduce((a, c) => a + c.qty, 0)}{' '}
-              </div>
-            )}
-          </Link>
-        </li>
-        <>
+    <>
+      <div>
+        <ul className="flex items-stretch">
+          <li>
+            <Link className="btn btn-ghost rounded-btn" href="/cart">
+              Cart
+              {mounted && items.length != 0 && (
+                <div className="badge badge-secondary">
+                  {items.reduce((a, c) => a + c.qty, 0)}{' '}
+                </div>
+              )}
+            </Link>
+          </li>
           {session && session.user ? (
             <>
               <li>
@@ -58,14 +65,19 @@ const Menu = () => {
                     tabIndex={0}
                     className="menu dropdown-content z-[1] p-2 shadow bg-base-300 rounded-box w-52 "
                   >
-                    <li>
-                      <Link href="/order-history">Order History</Link>
+                    {session.user.isAdmin && (
+                      <li onClick={handleClick}>
+                        <Link href="/admin/dashboard">Admin Dashboard</Link>
+                      </li>
+                    )}
+
+                    <li onClick={handleClick}>
+                      <Link href="/order-history">Order history </Link>
                     </li>
-                    <li>
+                    <li onClick={handleClick}>
                       <Link href="/profile">Profile</Link>
                     </li>
-
-                    <li>
+                    <li onClick={handleClick}>
                       <button type="button" onClick={signoutHandler}>
                         Sign out
                       </button>
@@ -85,9 +97,9 @@ const Menu = () => {
               </button>
             </li>
           )}
-        </>
-      </ul>
-    </div>
+        </ul>
+      </div>
+    </>
   )
 }
 

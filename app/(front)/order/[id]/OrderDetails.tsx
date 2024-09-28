@@ -3,20 +3,40 @@ import { OrderItem } from '@/lib/models/OrderModel'
 import { useSession } from 'next-auth/react'
 import Image from 'next/image'
 import Link from 'next/link'
+import toast from 'react-hot-toast'
 import useSWR from 'swr'
+import useSWRMutation from 'swr/mutation'
 
 export default function OrderDetails({
   orderId,
-  paypalClientId,
-}: {
+}: // paypalClientId, // Remove this line if not used
+{
   orderId: string
-  paypalClientId: string
+  // paypalClientId: string // Remove this line if not used
 }) {
+  const { trigger: deliverOrder, isMutating: isDelivering } = useSWRMutation(
+    `/api/orders/${orderId}`,
+    async (url) => {
+      const res = await fetch(`/api/admin/orders/${orderId}/deliver`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      const data = await res.json()
+      res.ok
+        ? toast.success('Order delivered successfully')
+        : toast.error(data.message)
+    }
+  )
+
   const { data: session } = useSession()
+  console.log(session)
+
   const { data, error } = useSWR(`/api/orders/${orderId}`)
 
   if (error) return error.message
-  if (!data) return 'girl pls wait ...'
+  if (!data) return 'Loading...'
 
   const {
     paymentMethod,
@@ -52,6 +72,7 @@ export default function OrderDetails({
               )}
             </div>
           </div>
+
           <div className="card bg-base-300 mt-4">
             <div className="card-body">
               <h2 className="card-title">Payment Method</h2>
@@ -63,6 +84,7 @@ export default function OrderDetails({
               )}
             </div>
           </div>
+
           <div className="card bg-base-300 mt-4">
             <div className="card-body">
               <h2 className="card-title">Items</h2>
@@ -89,7 +111,7 @@ export default function OrderDetails({
                             height={50}
                           ></Image>
                           <span className="px-2">
-                            {item.name} ({item.colors} {item.size})
+                            {item.name} ({item.color} {item.size})
                           </span>
                         </Link>
                       </td>
@@ -102,6 +124,7 @@ export default function OrderDetails({
             </div>
           </div>
         </div>
+
         <div>
           <div className="card bg-base-300">
             <div className="card-body">
@@ -131,6 +154,23 @@ export default function OrderDetails({
                     <div>${totalPrice}</div>
                   </div>
                 </li>
+
+                {/* Removed PayPal Button section */}
+
+                {session?.user.isAdmin && (
+                  <li>
+                    <button
+                      className="btn w-full my-2"
+                      onClick={() => deliverOrder()}
+                      disabled={isDelivering}
+                    >
+                      {isDelivering && (
+                        <span className="loading loading-spinner"></span>
+                      )}
+                      Mark as delivered
+                    </button>
+                  </li>
+                )}
               </ul>
             </div>
           </div>
