@@ -1,6 +1,6 @@
 # CompCore
 ## Description
-CompCore is a Next.js-based e-commerce web application that is focused on selling computer parts. The website will have an user-friendly interface with an inventory management system
+CompCore is a Next.js-based e-commerce web application that is focused on selling computer parts. The website will have an user-friendly interface with an inventory management system.
  
 ## Table of Contents
 - [Feature](#Feature)
@@ -17,7 +17,7 @@ CompCore is a Next.js-based e-commerce web application that is focused on sellin
   5.Search for preferable product by search bar or by category
   6.View their order history
   7.Choose their preferable theme(light or dark theme)
--Admin
+- Admin
   1. Can do everything a user can do
   2. Can view the dashboard
   3. Can edit,delete and add products
