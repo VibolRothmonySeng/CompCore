@@ -1,10 +1,9 @@
 'use client'
-import { useEffect } from 'react'
-import toast from 'react-hot-toast'
-import { useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
-import { useForm, SubmitHandler } from 'react-hook-form'
-import { getError } from '@/lib/utils'
+import { useRouter } from 'next/navigation'
+import { useEffect } from 'react'
+import { SubmitHandler, useForm } from 'react-hook-form'
+import toast from 'react-hot-toast'
 
 type Inputs = {
   name: string
@@ -25,6 +24,7 @@ const Form = () => {
     formState: { errors, isSubmitting },
   } = useForm<Inputs>({
     defaultValues: {
+      name: '',
       email: '',
       password: '',
     },
@@ -39,7 +39,6 @@ const Form = () => {
 
   const formSubmit: SubmitHandler<Inputs> = async (form) => {
     const { name, email, password } = form
-
     try {
       const res = await fetch('/api/auth/profile', {
         method: 'PUT',
@@ -149,6 +148,7 @@ const Form = () => {
               <div className="text-error">{errors.confirmPassword.message}</div>
             )}
           </div>
+
           <div className="my-2">
             <button
               type="submit"

@@ -42,7 +42,8 @@ export default function ProductEditForm({ productId }: { productId: string }) {
     setValue('name', product.name)
     setValue('slug', product.slug)
     setValue('price', product.price)
-    setValue('image', product.image)
+    // Replacing the old image with the new uploaded image path
+    setValue('image', 'data/image.png')  // Use the uploaded image path here
     setValue('category', product.category)
     setValue('brand', product.brand)
     setValue('countInStock', product.countInStock)

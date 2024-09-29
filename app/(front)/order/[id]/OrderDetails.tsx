@@ -9,10 +9,8 @@ import useSWRMutation from 'swr/mutation'
 
 export default function OrderDetails({
   orderId,
-}: // paypalClientId, // Remove this line if not used
-{
+}: {
   orderId: string
-  // paypalClientId: string // Remove this line if not used
 }) {
   const { trigger: deliverOrder, isMutating: isDelivering } = useSWRMutation(
     `/api/orders/${orderId}`,
@@ -154,8 +152,6 @@ export default function OrderDetails({
                     <div>${totalPrice}</div>
                   </div>
                 </li>
-
-                {/* Removed PayPal Button section */}
 
                 {session?.user.isAdmin && (
                   <li>

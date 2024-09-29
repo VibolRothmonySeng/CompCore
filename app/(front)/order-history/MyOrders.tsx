@@ -1,4 +1,5 @@
 'use client'
+
 import { Order } from '@/lib/models/OrderModel'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -15,6 +16,7 @@ export default function MyOrders() {
   }, [])
 
   if (!mounted) return <></>
+
   if (error) return 'An error has occurred.'
   if (!orders) return 'Loading...'
 
